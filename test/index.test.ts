@@ -28,6 +28,20 @@ describe('splitter', () => {
         }
     });
 
+    test('short 2', () => {
+        SMS_MSG_LENGTH = 9;
+        const input = 'a aa aaa a aa aaa aa aa';
+        const ar = TextSms(input, SMS_MSG_LENGTH);
+
+        const result = [
+            'a aa 1/5', 'aaa a 2/5', 'aa 3/5', 'aaa 4/5', 'aa aa 5/5'
+        ];
+
+        for ( let i = 0; i < ar.length; i++ ) {
+            expect(ar[i]).toEqual(result[i]);
+        }
+    });
+
     test('lorem 1', () => {
         SMS_MSG_LENGTH = 140;
         const input = 'Lorem ipsum dolor sit amet consectetur adipiscing elit Nullam eleifend odio at magna pretium suscipit Nam commodo mauris felis ut suscipit velit efficitur eget Sed sit amet posuere risus';

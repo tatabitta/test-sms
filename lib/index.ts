@@ -1,23 +1,45 @@
 export const TextSms = (original: string, maxSize: number) => {
-    const blocks = [];
+    let blocks: string[];
     const res = [];
     const originalMaxSize = maxSize;
     const items = original.split(" ");
     maxSize = maxSize - 4;
+    const breakpoints = [
+        9, 99, 999
+    ];
 
-    for (let k = 0; k < items.length; k++) {
-        let str = ''
-        str += items[k];
-        while (true) {
-            const next = k + 1;
-            if ( !(next < items.length && str.length + items[next].length + 1 < maxSize) ) {
-                break;
+    const recalculate = (decrement: number) => {
+        const innerBlocks: string[] = [];
+        let realMaxSize = maxSize - decrement;
+        let breakpointIdx = 0;
+
+        for (let k = 0; k < items.length; k++) {
+            if ( innerBlocks.length > breakpoints[breakpointIdx] ) {
+                realMaxSize -= 1;
+                breakpointIdx++;
             }
-            str = `${str} ${items[next]}`;
-            k++;
+
+            let str = ''
+            str += items[k];
+            while (k + 1 < items.length && str.length + items[k + 1].length + 1 <= realMaxSize) {
+                str = `${str} ${items[k + 1]}`;
+                k++;
+            }
+            innerBlocks.push(str);
+
+            if ( innerBlocks.length > 9999 ) {
+                throw new Error("result array too large");
+            }
+
+            if ( innerBlocks.length > breakpoints[decrement]) {
+                return recalculate(decrement + 1);
+            }
         }
-        blocks.push(str);
+
+        return innerBlocks;
     }
+
+    blocks = recalculate(0);
 
     if ( blocks.length === 1 ) {
         return [blocks[0]];
