@@ -14,7 +14,7 @@ export const TextSms = (original: string, maxSize: number) => {
         let breakpointIdx = 0;
 
         for (let k = 0; k < items.length; k++) {
-            if ( innerBlocks.length > breakpoints[breakpointIdx] ) {
+            if ( innerBlocks.length + 1 > breakpoints[breakpointIdx] ) {
                 realMaxSize -= 1;
                 breakpointIdx++;
             }
@@ -44,7 +44,6 @@ export const TextSms = (original: string, maxSize: number) => {
     if ( blocks.length === 1 ) {
         return [blocks[0]];
     }
-
     for (let n = 0; n < blocks.length; n++) {
         const item = `${blocks[n]} ${n + 1}/${blocks.length}`;
         if ( item.length > originalMaxSize ) {
